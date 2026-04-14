@@ -43,5 +43,6 @@ Thumbs.db
 # =========================
 # ASP.NET Core sensitive config
 # =========================
-Backend/appsettings.Development.json
-Backend/appsettings.Production.json
+Backend/Backend/appsettings.json
+Backend/Backend/appsettings.Development.json
+Backend/Backend/appsettings.Production.json
