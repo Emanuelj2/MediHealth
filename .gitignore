@@ -1,0 +1,47 @@
+# =========================
+# Visual Studio / .NET
+# =========================
+.vs/
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.log
+
+# =========================
+# Angular / Node
+# =========================
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+frontend/.cache/
+frontend/*.log
+frontend/npm-debug.log*
+frontend/.sass-cache/
+frontend/coverage/
+frontend/typings/
+
+# =========================
+# Environment files
+# =========================
+.env
+frontend/.env
+
+# =========================
+# OS files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# vs code settings
+# =========================
+.vscode/
+
+# =========================
+# ASP.NET Core sensitive config
+# =========================
+Backend/appsettings.Development.json
+Backend/appsettings.Production.json
