@@ -7,7 +7,8 @@ namespace Backend.Models
 {
     public class User : IdentityUser
     {
-        public string? FullName { get; set; }
+        
+        public string? FullName { get; set; } //this will be a concatination of the first and last naem
 
         [Required]
         public string FirstName { get; set; } = string.Empty;
