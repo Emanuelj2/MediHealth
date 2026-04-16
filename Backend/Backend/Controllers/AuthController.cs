@@ -1,4 +1,5 @@
-﻿using Backend.Models;
+﻿using Backend.Data;
+using Backend.Models;
 using Backend.Models.DTOs;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,11 +16,14 @@ namespace Backend.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _config;
+        private readonly AppDbContext _context;
 
-        public AuthController(UserManager<User> userManager, IConfiguration config)
+        public AuthController(UserManager<User> userManager, IConfiguration config, AppDbContext context)
         {
             _userManager = userManager;
             _config = config;
+            _context = context;
+            
         }
 
         [HttpPost("register")]
@@ -47,7 +51,24 @@ namespace Backend.Controllers
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
 
-            return Ok(new { message = "User created successfully" });
+            // 🔥 CREATE PATIENT AUTOMATICALLY
+            var defaultPlan = await _context.InsurancePlans.FirstOrDefaultAsync();
+
+            if (defaultPlan == null)
+                return BadRequest("No insurance plans exist. Seed one first.");
+
+            var patient = new Patient
+            {
+                Id = Guid.NewGuid(),
+                UserId = user.Id,
+                InsurancePlanId = defaultPlan.Id,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _context.Patients.Add(patient);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "User + Patient profile created successfully" });
         }
 
         [HttpPost("login")]

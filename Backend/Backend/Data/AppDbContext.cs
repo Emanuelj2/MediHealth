@@ -33,7 +33,7 @@ namespace Backend.Data
             builder.Entity<User>()
                 .HasOne(u => u.PatientProfile)
                 .WithOne(p => p.User)
-                .HasForeignKey<Patient>(p => p.UserId)
+                .HasForeignKey<Patient>(p => p.UserId) 
                 .OnDelete(DeleteBehavior.Cascade);
 
             // =========================
