@@ -13,7 +13,7 @@ namespace Backend.Models
         [Required]
         public string LastName { get; set; } = string.Empty;
 
-        public string? FullName => $"{FirstName}{LastName}"; //this will be a concatination of the first and last naem
+        public string? FullName => $"{FirstName} {LastName}"; //this will be a concatination of the first and last naem
 
         public Provider? ProviderProfile { get; set; }
         public Patient? PatientProfile { get; set; }
