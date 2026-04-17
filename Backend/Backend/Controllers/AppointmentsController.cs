@@ -37,7 +37,7 @@ namespace Backend.Controllers
             }
 
             //find patient profile
-            var patient = await _context.Patients.FindAsync(user.Id);
+            var patient = await _context.Patients.FirstOrDefaultAsync(p => p.UserId == user.Id);
 
             if (patient == null)
             {
