@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Controllers
 {
@@ -51,24 +52,51 @@ namespace Backend.Controllers
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
 
-            // 🔥 CREATE PATIENT AUTOMATICALLY
-            var defaultPlan = await _context.InsurancePlans.FirstOrDefaultAsync();
 
-            if (defaultPlan == null)
-                return BadRequest("No insurance plans exist. Seed one first.");
+            var role = model.Role.Trim().ToLower();
 
-            var patient = new Patient
+            if (role == "patient")
             {
-                Id = Guid.NewGuid(),
-                UserId = user.Id,
-                InsurancePlanId = defaultPlan.Id,
-                CreatedAt = DateTime.UtcNow
-            };
+                var defaultPlan = await _context.InsurancePlans.FirstOrDefaultAsync();
 
-            _context.Patients.Add(patient);
+                if (defaultPlan == null)
+                    return BadRequest("No insurance plans exist. Seed one first.");
+
+                var patient = new Patient
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = user.Id,
+                    InsurancePlanId = defaultPlan.Id,
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                _context.Patients.Add(patient);
+            }
+            else if (role == "provider")
+            {
+                var provider = new Provider
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = user.Id,
+                    CreatedAt = DateTime.UtcNow,
+                    SchedulingIntegrated = false
+                };
+
+                _context.Providers.Add(provider);
+            }
+            else
+            {
+                return BadRequest("Role must be either 'Patient' or 'Provider'");
+            }
+
+            // 5. Save profile table
             await _context.SaveChangesAsync();
 
-            return Ok(new { message = "User + Patient profile created successfully" });
+            return Ok(new
+            {
+                message = $"{role} registered successfully",
+                userId = user.Id
+            });
         }
 
         [HttpPost("login")]
